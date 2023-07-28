@@ -15,7 +15,7 @@
   <div align="center">
     <h1>How the average temperature has changed over the years</h1>
 
-    <svg width="960" height="600"></svg>
+    <svg width="1600" height="500"></svg>
   </div>
 
   <style>
@@ -50,7 +50,7 @@
         // Create the x-axis scale.
         var xScale = d3.scaleLinear()
           .domain([1961, 2022])
-          .range([0, 960]);
+          .range([0, 1600]);
       
         // Create the y-axis scale.
         var yScale = d3.scaleLinear()
@@ -59,7 +59,7 @@
       
         // Create the SVG element.
         var svg = d3.select("svg")
-          .attr("width", 960)
+          .attr("width", 1600)
           .attr("height", 500);
       
         // Create the bars.
