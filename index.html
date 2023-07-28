@@ -1,112 +1,93 @@
 <!DOCTYPE html>
-
-<!-- Load d3.js -->
-<script src="http://d3js.org/d3.v7.min.js"></script>
-<script src="https://d3js.org/topojson.v2.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/d3-fetch@3"></script>
-
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
-  <link href="styles.css" rel="stylesheet"> <!-- Link to your CSS file here -->
-  
+  <link href="styles.css" rel="stylesheet">
+  <!-- Load d3.js and other required scripts in head -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://d3js.org/topojson.v2.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/d3-fetch@3"></script>
 </head>
 <body>
-
-  <div class="topnav">
-    <a href="index.html">Home</a>
-    <a href="second.html">Scene1</a>
-    <a href="third.html">Scene2</a>
-    <a href="final.html">Final</a>
-  </div>
-
-  <div class="footer">
-    <p>CS416 Data Visualization - Narrative Visualization</p>
-  </div>
-
-  <style>
-    body {
-      font-family: "Lato", sans-serif;
-    }
-    .pagination a {
-      color: black;
-      padding: 8px 16px;
-      text-decoration: none;
-      transition: background-color 0.3s;
-    }
-  
-    /* Style the active/current link */
-    .pagination a.active {
-      background-color: blue;
-      color: white;
-    }
-  
-    /* Add a grey background color on mouse-over */
-    .pagination a:hover:not(.active) {
-      background-color: #ddd;
-    }
-  </style>
 
   <div align="center">
     <h1>How the average temperature has changed over the years</h1>
 
-<!-- barchart -->
-<head>
-    <style>
-        .bar {
-            fill: lightblue;
+    <svg width="960" height="600"></svg>
+  </div>
+
+  <style>
+    .bar {
+        fill: steelblue;
+    }
+
+    .axis path,
+    .axis line {
+        fill: none;
+        stroke: black;
+        shape-rendering: crispEdges;
+    }
+
+    .axis text {
+        font-family: sans-serif;
+        font-size: 11px;
+    }
+  </style>
+
+  <script>
+    async function drawChart() {
+        const rawData = await d3.csv("Annual_Surface_Temperature_Change_Global.csv");
+        const data = [];
+        for (let year = 1961; year <= 2022; year++) {
+          data.push({
+            year: year,
+            change: +rawData[0][`F${year}`]
+          });
         }
-    </style>
-</head>
-
-<body>
-<svg width="1600" height="400"></svg>
-<script>
-var dataset1 = [33, 57, 84, 21, 60]
-
-var svg = d3.select("svg"),
-            margin = 200,
-            width = svg.attr("width") - margin,
-            height = svg.attr("height") - margin
-
-
-var xScale = d3.scaleBand().range([0, width]).padding(0.5),
-            yScale = d3.scaleLinear().range([height, 0]);
-
-var g = svg.append("g")
-            .attr("transform", "translate(" + 100 + "," + 100 + ")");
-
-    
-        xScale.domain(dataset1);
-        yScale.domain([-0.5, 2]);
-
-        g.append("g")
-         .attr("transform", "translate(0," + height + ")")
-         .call(d3.axisBottom(xScale).tickFormat(function(d){
-           return "sale: " + d;
-         })
-         );
-
-        g.append("g")
-         .call(d3.axisLeft(yScale).tickFormat(function(d){
-             return "$" + d;
-         }).ticks(4));
-
-
-       g.selectAll(".bar")
-         .data(dataset1)
-         .enter().append("rect")
-         .attr("class", "bar")
-         .attr("x", function(d) { return xScale(d); })
-         .attr("y", function(d) { return yScale(d); })
-         .attr("width", xScale.bandwidth())
-         .attr("height", function(d) { return height - yScale(d); });
-  
+        
+        // Create the x-axis scale.
+        var xScale = d3.scaleLinear()
+          .domain([1961, 2022])
+          .range([0, 960]);
+      
+        // Create the y-axis scale.
+        var yScale = d3.scaleLinear()
+          .domain([-1, 1])
+          .range([500, 0]); // Invert range for correct orientation
+      
+        // Create the SVG element.
+        var svg = d3.select("svg")
+          .attr("width", 960)
+          .attr("height", 500);
+      
+        // Create the bars.
+        svg.selectAll(".bar")
+          .data(data)
+          .join("rect")
+          .attr("class", "bar")
+          .attr("x", d => xScale(d.year))
+          .attr("y", d => yScale(d.change))
+          .attr("width", 10)
+          .attr("height", d => 500 - yScale(d.change)); // Use 500 (height of the SVG) for the height calculation
+      
+        // Add the x-axis.
+        var xAxis = d3.axisBottom(xScale)
+          .ticks(2022 - 1961); // limit the number of ticks
+        svg.append("g")
+          .attr("class", "axis")
+          .attr("transform", `translate(0,${yScale(0)})`) // Move x-axis to the bottom of the chart
+          .call(xAxis);
+      
+        // Add the y-axis.
+        var yAxis = d3.axisLeft(yScale);
+        svg.append("g")
+          .attr("class", "axis")
+          .call(yAxis);
+      }
+      
+      drawChart();
 </script>
 </body>
 </html>
-
-
-
