@@ -55,7 +55,7 @@
         // Create the y-axis scale.
         var yScale = d3.scaleLinear()
           .domain([-1, 1])
-          .range([500, 0]); // Invert range for correct orientation
+          .range([0, 500]); // Flip range for correct orientation
       
         // Create the SVG element.
         var svg = d3.select("svg")
@@ -68,16 +68,16 @@
           .join("rect")
           .attr("class", "bar")
           .attr("x", d => xScale(d.year))
-          .attr("y", d => yScale(d.change))
+          .attr("y", d => yScale(Math.max(0, d.change)))
           .attr("width", 10)
-          .attr("height", d => 500 - yScale(d.change)); // Use 500 (height of the SVG) for the height calculation
+          .attr("height", d => Math.abs(yScale(d.change) - yScale(0))); // Use absolute height
       
         // Add the x-axis.
         var xAxis = d3.axisBottom(xScale)
           .ticks(2022 - 1961); // limit the number of ticks
         svg.append("g")
           .attr("class", "axis")
-          .attr("transform", `translate(0,${yScale(0)})`) // Move x-axis to the bottom of the chart
+          .attr("transform", `translate(0,${yScale(0)})`) // Move x-axis to the 0 point of the y scale
           .call(xAxis);
       
         // Add the y-axis.
