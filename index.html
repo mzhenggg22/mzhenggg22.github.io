@@ -37,7 +37,7 @@
   </style>
 
   <script>
-    async function drawChart() {
+    async function drawChart1() {
         const rawData = await d3.csv("Annual_Surface_Temperature_Change_Global.csv");
         const data = [];
         for (let year = 1961; year <= 2022; year++) {
@@ -54,12 +54,12 @@
       
         // Create the y-axis scale.
         var yScale = d3.scaleLinear()
-          .domain([-1, 1])
+          .domain([-0.5, 2])
           .range([0, 500]);  // Flip range for correct orientation
       
         // Create the SVG element.
         var svg = d3.select("svg")
-          .attr("width", 1600)
+          .attr("width", 1800)
           .attr("height", 500);
       
         // Create the bars.
@@ -69,7 +69,7 @@
           .attr("class", "bar")
           .attr("x", d => xScale(d.year))
           .attr("y", d => yScale(Math.max(0, d.change)))
-          .attr("width", 10)
+          .attr("width", 15)
           .attr("height", d => Math.abs(yScale(d.change) - yScale(0)));  // Use absolute height
       
         // Add the x-axis.
@@ -81,13 +81,15 @@
           .call(xAxis);
       
         // Add the y-axis.
-        var yAxis = d3.axisLeft(yScale);
+        var yAxis = d3.axisLeft(yScale)
+          .ticks(6) // This will add 6 ticks (-0.5, 0, 0.5, 1, 1.5, 2)
+          .tickFormat(d => `${d}°C`);  // Add °C to the labels
         svg.append("g")
           .attr("class", "axis")
           .call(yAxis);
     }
       
-      drawChart();
+      drawChart1();
 </script>
 </body>
 </html>
