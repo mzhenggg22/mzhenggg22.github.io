@@ -42,20 +42,20 @@
         const data = [];
         for (let year = 1961; year <= 2022; year++) {
           data.push({
-            year: year,
+            year: new Date(year, 0, 1),  // Converts year to JavaScript Date object
             change: +rawData[0][`F${year}`]
           });
         }
         
         // Create the x-axis scale.
-        var xScale = d3.scaleLinear()
-          .domain([1961, 2022])
+        var xScale = d3.scaleTime()  // Use scaleTime() instead of scaleLinear()
+          .domain([new Date(1961, 0, 1), new Date(2022, 0, 1)])  // Use JavaScript Date objects
           .range([0, 1600]);
       
         // Create the y-axis scale.
         var yScale = d3.scaleLinear()
           .domain([-1, 1])
-          .range([0, 500]); // Flip range for correct orientation
+          .range([0, 500]);  // Flip range for correct orientation
       
         // Create the SVG element.
         var svg = d3.select("svg")
@@ -70,14 +70,14 @@
           .attr("x", d => xScale(d.year))
           .attr("y", d => yScale(Math.max(0, d.change)))
           .attr("width", 10)
-          .attr("height", d => Math.abs(yScale(d.change) - yScale(0))); // Use absolute height
+          .attr("height", d => Math.abs(yScale(d.change) - yScale(0)));  // Use absolute height
       
         // Add the x-axis.
         var xAxis = d3.axisBottom(xScale)
-          .ticks(2022 - 1961); // limit the number of ticks
+          .ticks(d3.timeYear.every(3));  // Create a tick every 3 years
         svg.append("g")
           .attr("class", "axis")
-          .attr("transform", `translate(0,${yScale(0)})`) // Move x-axis to the 0 point of the y scale
+          .attr("transform", `translate(0,${yScale(0)})`)  // Move x-axis to the 0 point of the y scale
           .call(xAxis);
       
         // Add the y-axis.
@@ -85,7 +85,7 @@
         svg.append("g")
           .attr("class", "axis")
           .call(yAxis);
-      }
+    }
       
       drawChart();
 </script>
