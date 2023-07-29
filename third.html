@@ -4,20 +4,121 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
-  <link href="styles.css" rel="stylesheet"> <!-- Link to your CSS file here -->
+  <link href="styles.css" rel="stylesheet">
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  
+  <style>
+    /* Styles for the visualization and tooltip */
+    .bar {
+      fill: steelblue;
+      background-color: #ddd;
+    }
+    .highlight {
+      fill: lightblue;
+    }
+    .axis path,
+    .axis line {
+      fill: none;
+      stroke: black;
+      shape-rendering: crispEdges;
+    }
+    .axis text {
+      font-family: "Lato", sans-serif;
+      font-size: 11px;
+    }
+    #tooltip {
+      position: absolute;
+      width: auto;
+      height: auto;
+      padding: 10px;
+      background-color: azure;
+      -webkit-border-radius: 10px;
+      -moz-border-radius: 10px;
+      border-radius: 10px;
+      -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+      -moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+      box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+    }
+    #tooltip.hidden {
+      display: none;
+    }
+    #tooltip p {
+      margin: 0;
+      font-family: "Lato", sans-serif;
+      font-size: 13px;
+      line-height: 20px;
+    }
+  </style>
 </head>
-<body>
+<body onload="main()">
 
-  <div class="topnav">
-    <a href="index.html">Home</a>
-    <a href="second.html">Scene1</a>
-    <a href="third.html">Scene2</a>
-    <a href="final.html">Final</a>
-  </div>
+<!-- Top Navigation Bar -->
+<div class="topnav">
+  <a href="index.html">Scene1</a>
+  <a href="second.html">Scene2</a>
+  <a href="third.html">Scene3</a>
+</div>
 
-  <div class="footer">
-    <p>CS416 Data Visualization - Narrative Visualization</p>
+<!-- Tooltip div -->
+<div id="tooltip" class="hidden">
+  <p><span id="value">Arbitrary Value</span></p>
+</div>
+
+<!-- Content starts here -->
+<div class="content">
+  <div align="center">
+    <h1>How the average global temperature has changed over the years</h1>
+    <div class="Explanation"> 
+      <div align="center">
+        <p> The Industrial Revolution, which began in the late 18th century in Britain before spreading to other parts of the world, led to a significant shift in global economic and social structures.
+
+This era was characterized by a shift from manual labor and agrarian societies to machine-based manufacturing and industry.
+          </p>
+        <br>
+        <p>Click next to find out!</p>
+        <div class="pagination">
+          <a href="second.html"> &laquo; Back</a>
+        </div>
+
+      </div>
+    </div>
+
+
+    <svg width="1600" height="500"></svg>
   </div>
+</div>
+
+
+
+<!-- Explanation starts here -->
+
+
+
+<!-- Add the footer -->
+<div class="footer">
+  <p>CS416 - Data Visualization</p>
+</div>
+
+<!-- Active Link code -->
+<script>
+  window.onload = () => {
+    // Get all the topnav children a tags
+    const navLinks = document.querySelectorAll(".topnav a");
+  
+    // Get the current URL
+    const url = window.location.href;
+  
+    navLinks.forEach((link) => {
+      // If the link URL matches the current URL, make it active
+      if (url === link.href) {
+        link.className += " active";
+      }
+    });
+  };
+</script>
+
+<!-- JavaScript code for the visualization -->
+<script>
+</script>
 
 </body>
-</html>
