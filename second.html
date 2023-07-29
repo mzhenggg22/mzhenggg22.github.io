@@ -4,20 +4,166 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
-  <link href="styles.css" rel="stylesheet"> <!-- Link to your CSS file here -->
+  <link href="styles.css" rel="stylesheet">
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://d3js.org/topojson.v2.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/d3-fetch@3"></script>
 </head>
 <body>
-
+  <!-- Add the top navigation bar -->
   <div class="topnav">
-    <a href="index.html">Home</a>
-    <a href="second.html">Scene1</a>
-    <a href="third.html">Scene2</a>
-    <a href="final.html">Final</a>
+    <a href="index.html">Scene1</a>
+    <a href="second.html">Scene2</a>
+    <a href="#link3">Link 3</a>
   </div>
 
+  <style>
+    .bar {
+        fill: steelblue;
+        background-color: #ddd;
+    }
+    .axis path,
+    .axis line {
+        fill: none;
+        stroke: black;
+        shape-rendering: crispEdges;
+    }
+    .axis text {
+        font-family: "Lato", sans-serif;
+        font-size: 11px;
+    }
+  </style>
+
+
+  <!-- Content starts here -->
+  <div class="content">
+    <div align="center">
+      <h1>How the average temperature has changed over the years</h1>
+      <svg width="1600" height="500"></svg>
+    </div>
+  </div>
+
+  <!-- Add the footer -->
   <div class="footer">
-    <p>CS416 Data Visualization - Narrative Visualization</p>
+    <p>CS416 - Data Visualization</p>
   </div>
 
+  <!-- Active Link code -->
+  <script>
+    window.onload = () => {
+      // Get all the topnav children a tags
+      const navLinks = document.querySelectorAll(".topnav a");
+    
+      // Get the current URL
+      const url = window.location.href;
+    
+      navLinks.forEach((link) => {
+        // If the link URL matches the current URL, make it active
+        if (url === link.href) {
+          link.className += " active";
+        }
+      });
+    };
+    </script>
+
+
+    
+  <!-- JavaScript code -->
+  <script>
+    async function drawChart1() {
+      // Define margin
+      const margin = {top: 20, right: 20, bottom: 30, left: 50};
+
+      const rawData = await d3.csv("Annual_Surface_Temperature_Change_Global.csv");
+      const data = [];
+      for (let year = 1961; year <= 2022; year++) {
+        data.push({
+          year: year,  // Keep year as integer
+          change: +rawData[0][`F${year}`]
+        });
+      }
+    
+      // Define SVG dimensions
+      const svgWidth = 1600;
+      const svgHeight = 500;
+
+      // Define width and height of chart area
+      const width = svgWidth - margin.left - margin.right;
+      const height = svgHeight - margin.top - margin.bottom;
+      
+      // Append a 'g' element which is moved to start at top left of chart area
+      const svg = d3.select("svg")
+          .attr("width", svgWidth)
+          .attr("height", svgHeight)
+        .append("g")
+          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+      
+      // Define the x-axis scale
+      const xScale = d3.scaleBand()
+          .domain(data.map(d => d.year))  // Use the years as the domain
+          .range([0, width])
+          .padding(0.1);  // Adjust padding between bars as needed
+    
+      // Define the y-axis scale
+      const yScale = d3.scaleLinear()
+          .domain([-0.5, 2])
+          .range([height, 0]);
+    
+      // Define bar width
+      const barWidth = xScale.bandwidth();  // Get bandwidth from the xScale
+
+      // Add grid lines for x-axis
+      svg.selectAll(".x-grid")
+          .data(data.filter((d, i) => i % 3 === 0)) // filter the data to every 3rd year
+          .join("line")
+          .attr("class", "x-grid")
+          .attr("x1", d => xScale(d.year) + barWidth / 2)  // grid line starts at the middle of the bar
+          .attr("y1", 0)
+          .attr("x2", d => xScale(d.year) + barWidth / 2)  // grid line ends at the middle of the bar
+          .attr("y2", height)
+          .attr("stroke", "lightgray")
+          .attr("stroke-width", 1);
+    
+      // Add grid lines for y-axis
+      svg.selectAll(".y-grid")
+          .data(yScale.ticks(6))
+          .join("line")
+          .attr("class", "y-grid")
+          .attr("x1", 0)
+          .attr("y1", d => yScale(d))
+          .attr("x2", width)
+          .attr("y2", d => yScale(d))
+          .attr("stroke", "lightgray")
+          .attr("stroke-width", 1); 
+
+      // Create bars
+      svg.selectAll(".bar")
+          .data(data)
+          .join("rect")
+          .attr("class", "bar")
+          .attr("x", d => xScale(d.year))  // Use xScale to position bars
+          .attr("y", d => d.change < 0 ? yScale(0) : yScale(d.change))
+          .attr("width", barWidth)
+          .attr("height", d => Math.abs(yScale(d.change) - yScale(0)));
+
+
+      // Create the x-axis
+      const xAxis = d3.axisBottom(xScale)
+        .tickValues(data.filter(d => (d.year - 1961) % 3 === 0).map(d => d.year)); // filter for every 3rd year starting from 1961
+      svg.append("g")
+        .attr("class", "axis")
+        .attr("transform", `translate(0,${yScale(-0.5)})`)  // Move x-axis to y = -0.5
+        .call(xAxis);
+    
+      // Create the y-axis
+      const yAxis = d3.axisLeft(yScale).ticks(6).tickFormat(d => `${d}°C`);
+      svg.append("g")
+          .attr("class", "axis")
+          .call(yAxis);
+  }
+
+  drawChart1();
+  
+  </script>
 </body>
 </html>
