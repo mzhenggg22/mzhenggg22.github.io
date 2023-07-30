@@ -58,8 +58,7 @@
   <a href="index.html">1</a>
   <a href="second.html">2</a>
   <a href="third.html">3</a>
-  <a href="fourth.html">4</a>
-  <a href="fifth.html">5</a>
+  <a href="fifth.html">4</a>
   <a href="final.html">Resources</a>
 </div>
 
@@ -239,6 +238,14 @@
     .attr("y", (d) => (d.change < 0 ? yScale(0) : yScale(d.change))) // Transition y to actual position
     .attr("height", (d) => Math.abs(yScale(d.change) - yScale(0))); // Transition height to actual height
 
+    // Add annotation
+    svg.append("text")
+    .attr("x", xScale(1970) + barWidth / 2) // X position 
+    .attr("y", yScale(data.find((d) => d.year === 1966).change) - 175) // Y position
+    .text("We see that as time passes, the average temperature rises... but why?") // Text for the annotation
+    .attr("text-anchor", "middle") // Center the text over the bar
+    .attr("font-size", "14px") // Adjust the size 
+    .attr("fill", "gray"); // Color of the text
 
     // Create the x-axis
     const xAxis = d3.axisBottom(xScale)
@@ -253,19 +260,9 @@
     svg.append("g")
       .attr("class", "axis")
       .call(yAxis);
-
-    // Create the y-axis label
-    svg.append("text")
-    .attr("class", "y-axis-label")
-    .attr("transform", "rotate(-90)")
-    .attr("x", -height / 2)
-    .attr("y", -margin.left - 2)
-    .attr("dy", "1em")
-    .style("text-anchor", "middle")
-    .text("Change °C From 1951-1980 baseline");
   }
 
-  // Call the drawBar function when the page loads
+  // Call the draw function
   drawBar();
 </script>
 </body>

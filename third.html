@@ -6,6 +6,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
   <link href="styles.css" rel="stylesheet">
   <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://unpkg.com/d3-svg-annotation@2.5.1"></script>
   <style>
 
     .img-container {
@@ -49,8 +50,7 @@
   <a href="index.html">1</a>
   <a href="second.html">2</a>
   <a href="third.html">3</a>
-  <a href="fourth.html">4</a>
-  <a href="fifth.html">5</a>
+  <a href="fifth.html">4</a>
   <a href="final.html">Resources</a>
 </div>
 
@@ -77,7 +77,8 @@
       </p>
       <div class="pagination">
         <a href="second.html"> &laquo; Back</a>
-        <a href="fourth.html">Next &raquo;</a>
+        <a href="fourth.html">Overlay Temperature Graph</a>
+        <a href="fifth.html">Next &raquo;</a>
       </div> 
 
     </div>
@@ -194,6 +195,48 @@
         .attr("dy", "1em")
         .style("text-anchor", "middle")
         .text("CO₂ emissions (Billion Tonnes)");
+
+// Add the annotation
+const annotations = [
+  {
+    type: d3.annotationLabel,
+    note: {
+      label: "CO₂ emissions start to rise",  // Annotation text
+      title: "End of Industrial Revolution",  // Annotation title
+      wrap: 200,  // Text will wrap after this width
+    },
+    x: x(parseTime(1850)),  // x position
+    y: y(data.find(d => d.Year.getFullYear() === 1850)["Annual CO₂ emissions"]),  // y position
+    dy: -50,  // Shift annotation vertically
+    dx: 50  // Shift annotation horizontally
+  },
+  {
+    type: d3.annotationLabel,
+    note: {
+      label: "Emissions dip afterwards ",  // Annotation text
+      title: "2008 Financial Crisis",  // Annotation title
+      wrap: 200,  // Text will wrap after this width
+    },
+    x: x(parseTime(2008)),  // x position
+    y: y(data.find(d => d.Year.getFullYear() === 2008)["Annual CO₂ emissions"]),  // y position
+    dy: 60,  // Shift annotation vertically
+    dx: -160  // Shift annotation horizontally
+  }
+];
+
+const makeAnnotations = d3.annotation()
+  .annotations(annotations)
+  .on('subjectover', function(annotation) {
+    annotation.type.a.selectAll("g.annotation-connector, g.annotation-note")
+      .classed("hidden", false);
+  })
+  .on('subjectout', function(annotation) {
+    annotation.type.a.selectAll("g.annotation-connector, g.annotation-note")
+      .classed("hidden", true);
+  });
+
+  svg.append("g")
+  .call(makeAnnotations);
 
     // Create a rect on top of the svg area: this rectangle recovers mouse position
     svg.append('rect')

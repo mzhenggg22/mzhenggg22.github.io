@@ -9,6 +9,7 @@
     />
     <link href="styles.css" rel="stylesheet" />
     <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://unpkg.com/d3-svg-annotation@2.5.1"></script>
     <style>
       .img-container {
         position: relative;
@@ -63,8 +64,7 @@
       <a href="index.html">1</a>
       <a href="second.html">2</a>
       <a href="third.html">3</a>
-      <a href="fourth.html">4</a>
-      <a href="fifth.html">5</a>
+      <a href="fifth.html">4</a>
       <a href="final.html">Resources</a>
     </div>
 
@@ -88,11 +88,12 @@
         <svg id="chart1" width="1045" height="404"></svg>
 
         <p>
-          So now that we know that carbon dioxide emissions seems to be linked
-          with increasing global temperatures what should we do?
+          So now that we know that carbon dioxide emissions are linked with human activities resulting in 
+          increasing global temperatures what should we do?
         </p>
         <div class="pagination">
           <a href="third.html"> &laquo; Back</a>
+          <a href="third.html">Remove Temperature Graph</a>
           <a href="fifth.html">Next &raquo;</a>
         </div>
       </div>
@@ -108,13 +109,13 @@
       window.onload = () => {
         // Get all the topnav children a tags
         const navLinks = document.querySelectorAll(".topnav a");
-
+    
         // Get the current URL
         const url = window.location.href;
-
-        navLinks.forEach((link) => {
-          // If the link URL matches the current URL, make it active
-          if (url === link.href) {
+    
+        navLinks.forEach((link, index) => {
+          // If the current page is fourth.html and link is the 3rd one, make it active
+          if (url.includes("fourth.html") && index === 2) {
             link.className += " active";
           }
         });
@@ -289,6 +290,68 @@
               .ticks(6)
               .tickFormat((d) => `${d}°C`)
           );
+        var annotations = [
+          {
+            note: {
+              label: "CO₂ emissions start to rise",
+              title: "End of Industrial Revolution",
+              wrap: 190,
+            },
+            x: xScale(new Date(1850, 0, 1)),
+            y: yScale1(0),
+            dy: -100,
+            dx: 0,
+            type: d3.annotationLabel,
+          },
+          {
+            note: {
+              label: "Financial crisis",
+              title: "2008",
+              wrap: 200,
+            },
+            x: xScale(new Date(2008, 0, 1)),
+            y: yScale1(2008),
+            dy: -400,
+            dx: 0,
+            type: d3.annotationLabel,
+          },
+          {
+            note: {
+              label: "Human agctivities seem to directly affect CO2 Emissions",
+              title: "",
+              wrap: 0,
+            },
+            x: xScale(new Date(1780, 0, 1)),
+            y: yScale1(0),
+            dy: -200,
+            dx: 0,
+            type: d3.annotationLabel,
+          },
+        ];
+
+        // Add annotation to the chart
+        var makeAnnotations = d3.annotation().annotations(annotations);
+
+        svg.append("g").attr("class", "annotation-group").call(makeAnnotations);
+
+        // Change font size of third annotation
+        d3.select(".annotation-group")
+          .selectAll(".annotation-note-label")
+          .filter((d, i) => i === 2)
+          .style("font-size", "12px");
+
+        // Remove connector from third annotation and change subject line to invisible
+        d3.select(".annotation-group")
+          .selectAll(".annotation")
+          .filter((d, i) => i === 2)
+          .selectAll(".connector, .connector-end")
+          .remove();
+
+        d3.select(".annotation-group")
+          .selectAll(".annotation")
+          .filter((d, i) => i === 2)
+          .selectAll(".subject *")
+          .remove();
 
         // Create the y-axis label for emissions
         svg
