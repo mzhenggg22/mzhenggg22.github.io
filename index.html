@@ -24,7 +24,7 @@
     }
     .axis text {
       font-family: "Lato", sans-serif;
-      font-size: 11px;
+      font-size: 10px;
     }
     #tooltip {
       position: absolute;
@@ -48,18 +48,39 @@
       font-size: 13px;
       line-height: 20px;
     }
+
   </style>
 </head>
 <body onload="main()">
 
 <!-- Top Navigation Bar -->
 <div class="topnav">
-  <a href="index.html">Scene1</a>
-  <a href="second.html">Scene2</a>
-  <a href="third.html">Scene3</a>
-  <a href="fourth.html">Scene4</a>
-  <a href="fifth.html">Scene5</a>
+  <a href="index.html">1</a>
+  <a href="second.html">2</a>
+  <a href="third.html">3</a>
+  <a href="fourth.html">4</a>
+  <a href="fifth.html">5</a>
+  <a href="final.html">Resources</a>
 </div>
+
+<!-- Active Link code -->
+<script>
+  window.onload = () => {
+    // Get all the topnav children a tags
+    const navLinks = document.querySelectorAll(".topnav a");
+  
+    // Get the current URL
+    const url = window.location.href;
+  
+    navLinks.forEach((link) => {
+      // If the link URL matches the current URL, make it active
+      if (url === link.href) {
+        link.className += " active";
+      }
+    });
+  };
+</script>
+
 
 <!-- Tooltip div -->
 <div id="tooltip" class="hidden">
@@ -67,17 +88,15 @@
 </div>
 
 <!-- Content starts here -->
-<div class="content">
-  <div align="center">
+<div class="content" align="center">
     <h1>How has the average global temperature has changed over the years?</h1>
     <h2>Mean Temperature Change of Meteorological year</h2>
-    <svg width="1600" height="500"></svg>
+    <svg id="bar" width="1600" height="500"></svg>
   </div>
 </div>
 
 <!-- Explanation starts here -->
-<div class="Explanation"> 
-  <div align="center">
+<div class="Explanation" align="center"> 
     <p>This chart shows how the world's surface temperature has changed each year. We compare it to an average temperature found between 1951 and 1980. It clearly demonstrates an <u>increasing average temperature</u> year over year, but why?</p>
     <br>
     <p>Click next to find out!</p>
@@ -98,23 +117,6 @@
   <p>CS416 - Data Visualization</p>
 </div>
 
-<!-- Active Link code -->
-<script>
-  window.onload = () => {
-    // Get all the topnav children a tags
-    const navLinks = document.querySelectorAll(".topnav a");
-  
-    // Get the current URL
-    const url = window.location.href;
-  
-    navLinks.forEach((link) => {
-      // If the link URL matches the current URL, make it active
-      if (url === link.href) {
-        link.className += " active";
-      }
-    });
-  };
-</script>
 
 <!-- JavaScript code for the visualization -->
 <script>
@@ -192,12 +194,12 @@
     function onMouseOver(event, d) {
       // Get x and y coordinates for tooltip
       const [mouseX, mouseY] = d3.pointer(event);
-      const xPosition = mouseX + margin.left + 10; // Adjust tooltip position
-      const yPosition = mouseY + margin.top + 30; // Adjust tooltip position
+      const xPosition = mouseX + margin.left + 60  ; // Adjust tooltip position
+      const yPosition = mouseY + margin.top + 95; // Adjust tooltip position
     
       // Update Tooltip
       d3.select('#tooltip')
-        .style('left', xPosition + 'px')
+        .style('left', xPosition + 'px' )
         .style('top', yPosition + 'px')
         .classed('hidden', false) // Show the tooltip by removing the 'hidden' class
         .select('#value')
@@ -257,7 +259,7 @@
     .attr("class", "y-axis-label")
     .attr("transform", "rotate(-90)")
     .attr("x", -height / 2)
-    .attr("y", -margin.left - 5)
+    .attr("y", -margin.left - 2)
     .attr("dy", "1em")
     .style("text-anchor", "middle")
     .text("Change °C From 1951-1980 baseline");

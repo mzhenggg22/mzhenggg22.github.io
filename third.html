@@ -7,8 +7,7 @@
   <link href="styles.css" rel="stylesheet">
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <style>
-    /* Styles for the visualization and tooltip */
-    /* ... All the CSS stays the same... */
+
     .img-container {
       position: relative;
       display: inline-block;
@@ -18,7 +17,7 @@
       position: absolute;
       bottom: 0;
       left: 0;
-      background-color: rgba(0, 0, 0, 0.5);  /* You can adjust this for readability */
+      background-color: rgba(0, 0, 0, 0.5); 
       color: #fff;
       padding: 2px 5px;
       font-size: 10px;
@@ -47,42 +46,40 @@
 <body>
 <!-- Top Navigation Bar -->
 <div class="topnav">
-  <a href="index.html">Scene1</a>
-  <a href="second.html">Scene2</a>
-  <a href="third.html">Scene3</a>
-  <a href="fourth.html">Scene4</a>
-  <a href="fifth.html">Scene5</a>
+  <a href="index.html">1</a>
+  <a href="second.html">2</a>
+  <a href="third.html">3</a>
+  <a href="fourth.html">4</a>
+  <a href="fifth.html">5</a>
+  <a href="final.html">Resources</a>
 </div>
 
 <!-- Tooltip -->
 <div class="tooltip" style="opacity:0"></div>
 
 <!-- Content starts here -->
-<div class="content">
-  <div align="center">
+<div class="content" align="center">
     <h1 style="margin-top: 0; margin-bottom: 0;">The effects of switching to fossil fuels</h1>
     <div class="Explanation"> 
       <!-- Explanation starts here -->
-      <p style="margin-top: 0; margin-bottom: 0;"> This switch to fossil fuels had far-reaching effects on global carbon dioxide levels. The burning of these fuels releases carbon dioxide into the atmosphere, contributing to a marked increase in greenhouse gas concentrations. The U.S. Environmental Protection Agency notes that since the Industrial Revolution, human activities have been responsible for almost all of the increase in greenhouse gases in the atmosphere <a href="https://www.epa.gov/ghgemissions/overview-greenhouse-gases" target="_blank">[1]</a>.
+      <p style="margin-top: 0; margin-bottom: 0;"> This switch to fossil fuels had far-reaching effects on global carbon dioxide levels (primary greenhouse gas emitted by humans). The burning of these fuels releases carbon dioxide into the atmosphere, contributing to a marked increase in greenhouse gas concentrations. The U.S. Environmental Protection Agency notes that since the Industrial Revolution, human activities have been responsible for almost all of the increase in greenhouse gases in the atmosphere <a href="https://www.epa.gov/ghgemissions/overview-greenhouse-gases" target="_blank">[1]</a>.
       </p>
       <!-- Wrap your svg inside a div -->
-      <div align="center">
-        <p>Annual Carbon dioxide (CO₂) emissions from <u class="u-hover" title="Fossil emissions refer to the volume of carbon dioxide (CO₂) released as a result of burning fossil fuels and from direct industrial activities such as the production of cement and steel.
+
+        <p style="margin-top: 5; margin-bottom: 5;">Annual Carbon dioxide (CO₂) emissions from <u class="u-hover" title="Fossil emissions refer to the volume of carbon dioxide (CO₂) released as a result of burning fossil fuels and from direct industrial activities such as the production of cement and steel.
 
           They encompass the CO₂ emissions produced from the combustion of coal, oil, and gas, flaring activities, and various industrial procedures including cement manufacturing and steel production.
           
           Notably, the term fossil emissions does not account for the CO₂ emissions resulting from changes in land use, deforestation, soil-related processes, or vegetation.">fossil fuels and industry</u> <span class="u-hover" title=""></span></p>
 
-      <svg width="800" height="400"></svg></div>
-      <div class="Explanation Continued">
-      </div>
+      <svg width="800" height="400"></svg>
       <p style="margin-top: 0; margin-bottom: 2;">The global carbon emissions from fossil fuels have significantly increased since 1900. From less than 2 billion tons of carbon dioxide in 1900, the emissions have risen to over 36 billion tons in 2019 <a href="https://www.globalcarbonproject.org/carbonbudget/index.htm" target="_blank">[2]</a>. This trend is linked to both industrial activities and changes in land use (like deforestation), which decrease the earth's capacity to absorb CO₂. 
       </p>
       <div class="pagination">
         <a href="second.html"> &laquo; Back</a>
         <a href="fourth.html">Next &raquo;</a>
       </div> 
-      <p>boop</p>
+
     </div>
   </div>
 </div>
@@ -238,8 +235,8 @@
     
     tooltip
         .html("Year: " + selectedData.Year.getFullYear() + "<br>" + "CO₂ Emissions: " + formattedEmissionValue)
-        .style("left", (d3.pointer(event)[0]+430) + "px")
-        .style("top", (d3.pointer(event)[1]+200) + "px")
+        .style("left", (d3.pointer(event)[0]+ 480) + "px")
+        .style("top", (d3.pointer(event)[1] + 150) + "px")
 
     // Update the circle position
     focus
