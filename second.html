@@ -6,94 +6,56 @@
   <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
   <link href="styles.css" rel="stylesheet">
   <script src="https://d3js.org/d3.v7.min.js"></script>
-  
   <style>
     /* Styles for the visualization and tooltip */
-    .bar {
-      fill: steelblue;
-      background-color: #ddd;
+    /* ... All the CSS stays the same... */
+    .img-container {
+      position: relative;
+      display: inline-block;
     }
-    .highlight {
-      fill: lightblue;
-    }
-    .axis path,
-    .axis line {
-      fill: none;
-      stroke: black;
-      shape-rendering: crispEdges;
-    }
-    .axis text {
-      font-family: "Lato", sans-serif;
-      font-size: 11px;
-    }
-    #tooltip {
+
+    .figure-article-caption-owner {
       position: absolute;
-      width: auto;
-      height: auto;
-      padding: 10px;
-      background-color: azure;
-      -webkit-border-radius: 10px;
-      -moz-border-radius: 10px;
-      border-radius: 10px;
-      -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
-      -moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
-      box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
-    }
-    #tooltip.hidden {
-      display: none;
-    }
-    #tooltip p {
-      margin: 0;
-      font-family: "Lato", sans-serif;
-      font-size: 13px;
-      line-height: 20px;
+      bottom: 0;
+      left: 0;
+      background-color: rgba(0, 0, 0, 0.5);  /* You can adjust this for readability */
+      color: #fff;
+      padding: 2px 5px;
+      font-size: 10px;
     }
   </style>
 </head>
-<body onload="main()">
 
+<body>
 <!-- Top Navigation Bar -->
 <div class="topnav">
   <a href="index.html">Scene1</a>
   <a href="second.html">Scene2</a>
   <a href="third.html">Scene3</a>
-</div>
-
-<!-- Tooltip div -->
-<div id="tooltip" class="hidden">
-  <p><span id="value">Arbitrary Value</span></p>
+  <a href="fourth.html">Scene4</a>
+  <a href="fifth.html">Scene5</a>
 </div>
 
 <!-- Content starts here -->
 <div class="content">
   <div align="center">
-    <h1>How the average global temperature has changed over the years</h1>
+    <h1>Industrialization was one of the driving forces behind rising temperatures</h1>
     <div class="Explanation"> 
-      <div align="center">
-        <p> The Industrial Revolution, which began in the late 18th century in Britain before spreading to other parts of the world, led to a significant shift in global economic and social structures.
-
-This era was characterized by a shift from manual labor and agrarian societies to machine-based manufacturing and industry.
-          </p>
-        <br>
-        <p>Click next to find out!</p>
-        <div class="pagination">
-          <a href="index.html"> &laquo; Back</a>
-          <a href="third.html">Next &raquo;</a>
-        </div>
-
+      <!-- Explanation starts here -->
+      <p> The Industrial Revolution, which began in the late 18th century in Britain before spreading to other parts of the world, led to a significant shift in global economic and social structures. This era was characterized by a shift from manual labor and agrarian societies to machine-based manufacturing and industry.</p>
+      <!-- Wrap your image and the caption inside a div -->
+      <div class="img-container">
+        <img src="industrialrevolution.jpg" alt="Industrial_Revolution" width="500" height="333">
+        <div class="figure-article-caption-owner">Danita Delimont / Getty Images</div>
       </div>
+      <p>One of the most significant transformations during the Industrial Revolution was the increased use of fossil fuels. Prior to this period, most energy was sourced from wind, water, and wood. However, with the invention and adoption of steam engines, coal became a key energy source, with petroleum and natural gas following in later years.</p>
+      <div class="pagination">
+        <a href="index.html"> &laquo; Back</a>
+        <a href="third.html">Next &raquo;</a>
+      </div> 
     </div>
-
-
-    <svg width="1600" height="500"></svg>
   </div>
 </div>
-
-
-
-<!-- Explanation starts here -->
-
-
 
 <!-- Add the footer -->
 <div class="footer">
@@ -120,6 +82,8 @@ This era was characterized by a shift from manual labor and agrarian societies t
 
 <!-- JavaScript code for the visualization -->
 <script>
+  // Code for visualization
 </script>
 
 </body>
+</html>
