@@ -1,0 +1,97 @@
+* {
+    box-sizing: border-box;
+    font-family: "Lato", sans-serif;
+  }
+  
+  body {
+    margin: 0;
+    font-family: "Lato", sans-serif;
+  }
+  
+  /* Style the top navigation bar */
+  .topnav {
+    overflow: hidden;
+    background-color: #333;
+  }
+  
+  /* Style the topnav links */
+  .topnav a {
+    float: left;
+    display: block;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+  }
+  
+  /* Style the active class (and buttons on mouse-over) */
+  .topnav a.active, .topnav a:hover {
+    background-color: #ddd;
+    color: black;
+  }
+  
+  /* Style the content */
+  .content {
+    padding: 10px;
+  }
+  
+  /* Style the footer */
+  .footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: #333;
+    color: white;
+    text-align: center;
+  }
+
+  .Explanation {
+    width: 55%;
+    font-family: "Lato", sans-serif;
+    margin: auto;
+    font-size: 18px;
+}
+
+.pagination a {
+  color: black;
+  padding: 8px 16px;
+  text-decoration: none;
+  transition: background-color 0.3s;
+  background-color: lightgray;
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
+  border-radius: 8px;
+}
+
+/* Style the active/current link */
+.pagination a.active {
+  background-color: blue;
+  color: white;
+}
+
+/* Add a grey background color on mouse-over */
+.pagination a:hover:not(.active) {
+  background-color: steelblue;
+}
+
+.container {
+  width: 90%;  /* instead of a fixed pixel value */
+  margin: auto;  /* centers the container */
+}
+
+@media only screen and (max-width: 600px) {
+  body {
+      background-color: lightblue;
+  }
+}
+
+svg{
+  background-color: rgb(241, 241, 241);
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+}
+
+
+

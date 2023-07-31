@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lato&display=swap"
+      rel="stylesheet"
+    />
+    <link href="styles.css" rel="stylesheet" />
+    <!-- Link to your CSS file here -->
+  </head>
+
+  <style>
+    .Explanation {
+      background-color: rgb(241, 241, 241);
+      -webkit-border-radius: 5px;
+      -moz-border-radius: 5px;
+      border-radius: 5px;
+    }
+  </style>
+  <body>
+    <div class="topnav">
+      <a href="index.html">1</a>
+      <a href="second.html">2</a>
+      <a href="third.html">3</a>
+      <a href="fifth.html">4</a>
+      <a href="final.html">Resources</a>
+    </div>
+
+    <div class="footer">
+      <p></p>
+    </div>
+
+    <!-- Active Link code -->
+    <script>
+      window.onload = () => {
+        // Get all the topnav children a tags
+        const navLinks = document.querySelectorAll(".topnav a");
+
+        // Get the current URL
+        const url = window.location.href;
+
+        navLinks.forEach((link) => {
+          // If the link URL matches the current URL, make it active
+          if (url === link.href) {
+            link.className += " active";
+          }
+        });
+      };
+    </script>
+
+    <!-- Content starts here -->
+    <div class="content" align="center">
+      <h1>Data Sources</h1>
+      <div class="Explanation">
+        <!-- Explanation starts here -->
+        <p>https://climatedata.imf.org/pages/climatechange-data</p>
+
+        <p>https://ourworldindata.org/co2-dataset-sources</p>
+
+        <p>
+          https://www.epa.gov/ghgemissions/global-greenhouse-gas-emissions-data
+        </p>
+      </div>
+    </div>
+
+    <div class="pagination" align="center">
+      <a href="fifth.html"> &laquo; Back</a>
+    </div>
+  </body>
+</html>

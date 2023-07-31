@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+  <link href="styles.css" rel="stylesheet">
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://unpkg.com/d3-svg-annotation@2.5.1"></script>
+  <style>
+
+    .img-container {
+      position: relative;
+      display: inline-block;
+    }
+
+    .figure-article-caption-owner {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      background-color: rgba(0, 0, 0, 0.5); 
+      color: #fff;
+      padding: 2px 5px;
+      font-size: 10px;
+    }
+    .line {
+      fill: none;
+      stroke: steelblue;
+      stroke-width: 2px;
+    }
+    .tooltip {
+      position: absolute;
+      width: auto;
+      height: auto;
+      padding: 10px;
+      background-color: azure;
+      -webkit-border-radius: 10px;
+      -moz-border-radius: 10px;
+      border-radius: 10px;
+      -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+      -moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+      box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+    }
+  </style>
+</head>
+
+<body>
+<!-- Top Navigation Bar -->
+<div class="topnav">
+  <a href="index.html">1</a>
+  <a href="second.html">2</a>
+  <a href="third.html">3</a>
+  <a href="fifth.html">4</a>
+  <a href="final.html">Resources</a>
+</div>
+
+<!-- Tooltip -->
+<div class="tooltip" style="opacity:0"></div>
+
+<!-- Content starts here -->
+<div class="content" align="center">
+    <h1 style="margin-top: 0; margin-bottom: 0;">The effects of switching to fossil fuels</h1>
+    <div class="Explanation"> 
+      <!-- Explanation starts here -->
+      <p style="margin-top: 0; margin-bottom: 0;"> This switch to fossil fuels had far-reaching effects on global carbon dioxide levels (primary greenhouse gas emitted by humans). The burning of these fuels releases carbon dioxide into the atmosphere, contributing to a marked increase in greenhouse gas concentrations. The U.S. Environmental Protection Agency notes that since the Industrial Revolution, human activities have been responsible for almost all of the increase in greenhouse gases in the atmosphere <a href="https://www.epa.gov/ghgemissions/overview-greenhouse-gases" target="_blank">[1]</a>.
+      </p>
+      <!-- Wrap your svg inside a div -->
+
+        <p style="margin-top: 5; margin-bottom: 5;">Annual Carbon dioxide (CO₂) emissions from <u class="u-hover" title="Fossil emissions refer to the volume of carbon dioxide (CO₂) released as a result of burning fossil fuels and from direct industrial activities such as the production of cement and steel.
+
+          They encompass the CO₂ emissions produced from the combustion of coal, oil, and gas, flaring activities, and various industrial procedures including cement manufacturing and steel production.
+          
+          Notably, the term fossil emissions does not account for the CO₂ emissions resulting from changes in land use, deforestation, soil-related processes, or vegetation.">fossil fuels and industry</u> <span class="u-hover" title=""></span></p>
+
+      <svg width="800" height="400"></svg>
+      <p style="margin-top: 0; margin-bottom: 2;">The global carbon emissions from fossil fuels have significantly increased since 1900. From less than 2 billion tons of carbon dioxide in 1900, the emissions have risen to over 36 billion tons in 2019 <a href="https://www.globalcarbonproject.org/carbonbudget/index.htm" target="_blank">[2]</a>. This trend is linked to both industrial activities and changes in land use (like deforestation), which decrease the earth's capacity to absorb CO₂. 
+      </p>
+      <div class="pagination">
+        <a href="second.html"> &laquo; Back</a>
+        <a href="fourth.html">Overlay Temperature Graph</a>
+        <a href="fifth.html">Next &raquo;</a>
+      </div> 
+
+    </div>
+  </div>
+</div>
+
+<!-- Add the footer -->
+<div class="footer">
+  <p>CS416 - Data Visualization</p>
+</div>
+
+<!-- Active Link code -->
+<script>
+  window.onload = () => {
+    // Get all the topnav children a tags
+    const navLinks = document.querySelectorAll(".topnav a");
+  
+    // Get the current URL
+    const url = window.location.href;
+  
+    navLinks.forEach((link) => {
+      // If the link URL matches the current URL, make it active
+      if (url === link.href) {
+        link.className += " active";
+      }
+    });
+  };
+</script>
+
+<!-- JavaScript code for the visualization -->
+<script>
+    async function drawLine1() {
+    // Define margin
+    const margin = { top: 20, right: 20, bottom: 30, left: 50 };
+
+    // Load the CSV data
+    const data = await d3.csv("Global_CO2_Emissions.csv");
+
+    const width = 1000 - margin.left - margin.right;
+    const height = 500 - margin.top - margin.bottom;
+
+    const svg = d3.select("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    // Parse the date / time
+    var parseTime = d3.timeParse("%Y");
+
+    // Set the ranges
+    var x = d3.scaleTime().range([0, width]);
+    var y = d3.scaleLinear().range([height, 0]);
+
+    // Define the line
+    var valueline = d3.line()
+        .x(function (d) { return x(d.Year); })
+        .y(function (d) { return y(d["Annual CO₂ emissions"]); });
+
+    data.forEach(function (d) {
+        d.Year = parseTime(d.Year);
+        d["Annual CO₂ emissions"] = +d["Annual CO₂ emissions"];
+    });
+
+    // Scale the range of the data
+    x.domain(d3.extent(data, function (d) { return d.Year; }));
+    y.domain([0, d3.max(data, function (d) { return d["Annual CO₂ emissions"]; })]);
+
+    // Add the valueline path.
+    const path = svg.append("path")
+        .data([data])
+        .attr("class", "line")
+        .attr("d", valueline);
+
+    // Add a circle on the line at closest data point
+    var focus = svg.append('g')
+    .append('circle')
+        .style("fill", "none")
+        .attr("stroke", "black")
+        .attr('r', 8.5)
+        .style("opacity", 0);
+
+    // Add a vertical line at x-coordinate
+    var focusLine = svg.append('line')
+        .style("stroke", "black")
+        .style("stroke-dasharray", ("3, 3"))
+        .style("opacity", 0);
+
+    // Create a transition for the line
+    const totalLength = path.node().getTotalLength();
+
+    path.attr("stroke-dasharray", totalLength + " " + totalLength)
+        .attr("stroke-dashoffset", totalLength)
+        .transition()
+        .duration(1500)  // Controls speed of the drawing
+        .ease(d3.easeLinear)  // Controls the pattern of easing
+        .attr("stroke-dashoffset", 0);
+
+    // Add the X Axis
+    svg.append("g")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x));
+
+    // Add the Y Axis
+    svg.append("g")
+        .call(d3.axisLeft(y).tickFormat(d => `${d / 1e9}B`));
+
+    // Create the y-axis label
+    svg.append("text")
+        .attr("class", "y-axis-label")
+        .attr("transform", "rotate(-90)")
+        .attr("x", -height / 2)
+        .attr("y", -margin.left - 5)
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .text("CO₂ emissions (Billion Tonnes)");
+
+// Add the annotation
+const annotations = [
+  {
+    type: d3.annotationLabel,
+    note: {
+      label: "CO₂ emissions start to rise",  // Annotation text
+      title: "End of Industrial Revolution",  // Annotation title
+      wrap: 200,  // Text will wrap after this width
+    },
+    x: x(parseTime(1850)),  // x position
+    y: y(data.find(d => d.Year.getFullYear() === 1850)["Annual CO₂ emissions"]),  // y position
+    dy: -50,  // Shift annotation vertically
+    dx: 50  // Shift annotation horizontally
+  },
+  {
+    type: d3.annotationLabel,
+    note: {
+      label: "Emissions dip afterwards ",  // Annotation text
+      title: "2008 Financial Crisis",  // Annotation title
+      wrap: 200,  // Text will wrap after this width
+    },
+    x: x(parseTime(2008)),  // x position
+    y: y(data.find(d => d.Year.getFullYear() === 2008)["Annual CO₂ emissions"]),  // y position
+    dy: 60,  // Shift annotation vertically
+    dx: -160  // Shift annotation horizontally
+  }
+];
+
+const makeAnnotations = d3.annotation()
+  .annotations(annotations)
+  .on('subjectover', function(annotation) {
+    annotation.type.a.selectAll("g.annotation-connector, g.annotation-note")
+      .classed("hidden", false);
+  })
+  .on('subjectout', function(annotation) {
+    annotation.type.a.selectAll("g.annotation-connector, g.annotation-note")
+      .classed("hidden", true);
+  });
+
+  svg.append("g")
+  .call(makeAnnotations);
+
+    // Create a rect on top of the svg area: this rectangle recovers mouse position
+    svg.append('rect')
+        .style("fill", "none")
+        .style("pointer-events", "all")
+        .attr('width', width)
+        .attr('height', height)
+        .on('mouseover', mouseover)
+        .on('mousemove', mousemove)
+        .on('mouseout', mouseout);
+
+    // Create a div for the tooltip
+    var tooltip = d3.select("body").append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 0);
+
+    var bisect = d3.bisector(function(d) { return d.Year; }).left;
+
+    function mouseover() {
+        tooltip.style("opacity", 1)
+        focus.style("opacity", 1)
+        focusLine.style("opacity", 1)
+    }
+
+    function mousemove(event) {
+          // recover coordinate we need
+    var x0 = x.invert(d3.pointer(event)[0]);
+    var i = bisect(data, x0, 1);
+    var selectedData = data[i]
+
+    // calculate the emission value and format it
+    var emissionValue = selectedData["Annual CO₂ emissions"];
+    var formattedEmissionValue = '';
+    if(emissionValue < 1e9) {
+        formattedEmissionValue = (emissionValue / 1e6).toFixed(2) + ' million tonnes';
+    } else {
+        formattedEmissionValue = (emissionValue / 1e9).toFixed(2) + ' billion tonnes';
+    }
+    
+    tooltip
+        .html("Year: " + selectedData.Year.getFullYear() + "<br>" + "CO₂ Emissions: " + formattedEmissionValue)
+        .style("left", (d3.pointer(event)[0]+ 480) + "px")
+        .style("top", (d3.pointer(event)[1] + 150) + "px")
+
+    // Update the circle position
+    focus
+      .attr("cx", x(selectedData.Year))
+      .attr("cy", y(selectedData["Annual CO₂ emissions"]));
+
+    // Update the vertical line position
+    focusLine
+      .attr("x1", x(selectedData.Year))
+      .attr("y1", y.range()[0])
+      .attr("x2", x(selectedData.Year))
+      .attr("y2", y(selectedData["Annual CO₂ emissions"]));
+}
+
+    function mouseout() {
+        tooltip.style("opacity", 0)
+        focus.style("opacity", 0)
+        focusLine.style("opacity", 0)
+    }
+}
+    drawLine1();
+    
+</script>
+
+
+</body>
+</html>

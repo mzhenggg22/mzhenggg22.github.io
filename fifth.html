@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+  <link href="styles.css" rel="stylesheet">
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    .img-container {
+      position: relative;
+      display: inline-block;
+    }
+
+    .figure-article-caption-owner {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      background-color: rgba(0, 0, 0, 0.5);  /* You can adjust this for readability */
+      color: #fff;
+      padding: 2px 5px;
+      font-size: 10px;
+    }
+    .line {
+     fill: none;
+     stroke-width: 2px;
+    }
+
+    .tooltip {
+    position: absolute;
+    width: auto;
+    height: auto;
+    padding: 10px;
+    background-color: azure;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+    -moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+    }
+    .chart-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;  
+        align-items: center;  
+        gap: 20px; 
+      }
+
+    .svg-wrapper {
+        flex: 0 0 auto;  /* Don't grow, don't shrink, auto basis */
+    }
+
+    .text-wrapper {
+        flex: 1 0 auto;  
+        max-width: 50%;
+      }
+
+      body, html {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      
+      .main-content {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        width: 100%;
+        text-align: center;
+      }
+      
+      
+  </style>
+</head>
+
+<body>
+<!-- Top Navigation Bar -->
+<div class="topnav">
+    <a href="index.html">1</a>
+    <a href="second.html">2</a>
+    <a href="third.html">3</a>
+    <a href="fifth.html">4</a>
+    <a href="final.html">Resources</a>
+  </div>
+
+
+<!-- Tooltip -->
+<div class="tooltip" style="opacity:0"></div>
+
+<!-- Content starts here -->
+<div class="content" >
+  <div >
+    <h1 align="center">Global greenhouse emissions by sector</h1>
+    <p align="center">This pie chart displays the breakdown of global greenhouse gas emissions by sector (from 2014).
+    <!-- Wrap your svg inside a div -->
+    <div id="container" class="chart-container">
+        <svg id="chart1" width="550" height="550"> </svg> 
+        
+
+        <div class="text-wrapper">
+            <p><strong>Electricity and Heat Production:</strong> This sector, the largest emitter, primarily involves the burning of coal, natural gas, and oil.</p>
+            <p><strong>Agriculture, Forestry, and Other Land Use:</strong> Emissions mostly come from crop cultivation, livestock, and deforestation. This does not account for the CO2 offset by sequestering carbon.</p>
+            <p><strong>Industry:</strong> Emissions in this sector are largely from fossil fuels burned onsite for energy, chemical, metallurgical, and mineral transformation processes, and waste management activities.</p>
+            <p><strong>Transportation:</strong> Emissions primarily come from fossil fuels burned for various forms of transportation. Almost all transportation energy (95%) is petroleum-based.</p>
+            <p><strong>Other Energy:</strong> Emissions here refer to all other emissions from the Energy sector not directly associated with electricity or heat production, such as fuel extraction, refining, and transportation.</p>
+            <p><strong>Buildings:</strong> This sector's emissions come from onsite energy generation and fuel burning for heat and cooking. Emissions from electricity use in buildings are covered under the Electricity and Heat Production sector.</p>
+            <p id="source">Source: <a href="https://www.epa.gov/ghgemissions/global-greenhouse-gas-emissions-data" target="_blank">EPA</a></p>
+        <div class="suggestions">
+            <h2>Strategies for Cutting Greenhouse Emissions</h2>
+            <ul>
+            <li><strong>Electricity and Heat Production:</strong> Use more renewable energy sources like wind, solar, and hydro power. Improve energy efficiency and adopt carbon capture technologies.</li>
+            <li><strong>Agriculture, Forestry, and Other Land Use:</strong> Adopt sustainable farming practices, prevent deforestation, and encourage reforestation.</li>
+            <li><strong>Industry:</strong> Improve energy efficiency, switch to cleaner fuels, and promote recycling and reusing materials.</li>
+            <li><strong>Transportation:</strong> Promote public transportation, cycling, walking, and electric vehicles. Improve fuel efficiency standards and develop sustainable biofuels.</li>
+            <li><strong>Other Energy:</strong> Reduce gas flaring and venting in the energy industry. Improve infrastructure to minimize fossil fuel leakage.</li>
+            <li><strong>Buildings:</strong> Improve insulation and energy efficiency. Encourage the use of energy-efficient appliances and better design principles.</li>
+            </ul>
+        </div>
+    </p>
+</div>
+</div>
+<div class="pagination" align="center">
+    <a href="fourth.html"> &laquo; Back</a>
+    <a href="final.html">Next &raquo;</a>
+  </div> 
+
+<!-- Add the footer -->
+<div class="footer">
+  <p>CS416 - Data Visualization</p>
+</div>
+
+<!-- Active Link code -->
+<script>
+  window.onload = () => {
+    // Get all the topnav children a tags
+    const navLinks = document.querySelectorAll(".topnav a");
+  
+    // Get the current URL
+    const url = window.location.href;
+  
+    navLinks.forEach((link) => {
+      // If the link URL matches the current URL, make it active
+      if (url === link.href) {
+        link.className += " active";
+      }
+    });
+  };
+</script>
+
+<!-- Javascript -->
+<script>
+    var width = 550,
+        height = 550,
+        radius = Math.min(width, height) / 2;
+
+    var color = d3.scaleOrdinal()
+        .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c"]);
+
+    var arc = d3.arc()
+        .outerRadius(radius - 10)
+        .innerRadius(0);
+
+    var outerArc = d3.arc()
+        .innerRadius(radius * 0.9)  // Adjust this value to move the labels closer or farther from the edge of the pie
+        .outerRadius(radius * 0.9);
+
+    var pie = d3.pie()
+        .sort(null)
+        .value(function(d) { return d.percent; });
+
+    var svg = d3.select("#chart1")
+        .append("g")
+        .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+    var data = [
+        {source: "Electricity and Heat Production", percent: 25},
+        {source: "Agriculture, Forestry, and Other Land Use", percent: 24},
+        {source: "Buildings", percent: 6},
+        {source: "Transportation", percent: 14},
+        {source: "Industry", percent: 21},
+        {source: "Other Energy", percent: 10}
+    ];
+
+    var g = svg.selectAll(".arc")
+        .data(pie(data))
+        .enter().append("g")
+        .attr("class", "arc");
+
+    g.append("path")
+        .attr("d", arc)
+        .style("fill", function(d) { return color(d.data.source); });
+
+    g.append("text")
+    var width = 550,
+    height = 550,
+    radius = Math.min(width, height) / 2;
+
+var color = d3.scaleOrdinal()
+    .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c"]);
+
+var arc = d3.arc()
+    .outerRadius(radius - 10)
+    .innerRadius(0);
+
+var pie = d3.pie()
+    .sort(null)
+    .value(function(d) { return d.percent; });
+
+var svg = d3.select("#chart1")
+    .append("g")
+    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+var data = [
+    {source: "Electricity and Heat Production: 25%", percent: 25},
+    {source: "Agriculture, Forestry, and Other Land Use: 24%", percent: 24},
+    {source: "Buildings: 6%", percent: 6},
+    {source: "Transportation: 14%", percent: 14},
+    {source: "Industry: 21%", percent: 21},
+    {source: "Other Energy: 10%", percent: 10}
+];
+
+var g = svg.selectAll(".arc")
+    .data(pie(data))
+    .enter().append("g")
+    .attr("class", "arc");
+
+g.append("path")
+    .attr("d", arc)
+    .style("fill", function(d) { return color(d.data.source); });
+
+g.append("text")
+    .attr('transform', function (d) {
+        var c = arc.centroid(d),
+            x = c[0],
+            y = c[1],
+            // Pythagorean theorem
+            h = Math.sqrt(x*x + y*y);
+        return 'translate(' + (x/h * radius * 0.55) +  ',' +
+           (y/h * radius * 0.6) +  ')'; 
+    })
+    .attr('dy', '.35em')
+    .style('text-anchor', 'middle')
+    .style("font-size", "12px")
+    .style("fill", "black")
+    .style("font-weight", "bold")
+    
+    .each(function(d) {
+        var arr = d.data.source.split(" ");
+        for (i = 0; i < arr.length; i++) {
+            d3.select(this).append("tspan")
+                .text(arr[i])
+                .attr("dy", i ? "1.2em" : 0)
+                .attr("x", 0)
+                .attr("text-anchor", "middle")
+                .attr("class", "tspan" + i);
+        }
+    
+    });
+</script>
+
+
+</body>
+</html>

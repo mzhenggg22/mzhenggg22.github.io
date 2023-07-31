@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lato&display=swap"
+      rel="stylesheet"
+    />
+    <link href="styles.css" rel="stylesheet" />
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://unpkg.com/d3-svg-annotation@2.5.1"></script>
+    <style>
+      .img-container {
+        position: relative;
+        display: inline-block;
+      }
+
+      .figure-article-caption-owner {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        background-color: rgba(
+          0,
+          0,
+          0,
+          0.5
+        ); /* You can adjust this for readability */
+        color: #fff;
+        padding: 2px 5px;
+        font-size: 10px;
+      }
+      .line {
+        fill: none;
+        stroke-width: 2px;
+      }
+
+      .tooltip {
+        position: absolute;
+        width: auto;
+        height: auto;
+        padding: 10px;
+        background-color: azure;
+        -webkit-border-radius: 10px;
+        -moz-border-radius: 10px;
+        border-radius: 10px;
+        -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+        -moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+        box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+      }
+
+      div.tooltip {
+        padding: 10px;
+        background: azure;
+        border-radius: 10px;
+        pointer-events: none;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Top Navigation Bar -->
+    <div class="topnav">
+      <a href="index.html">1</a>
+      <a href="second.html">2</a>
+      <a href="third.html">3</a>
+      <a href="fifth.html">4</a>
+      <a href="final.html">Resources</a>
+    </div>
+
+    <!-- Tooltip -->
+    <div class="tooltip" style="opacity: 0"></div>
+
+    <!-- Content starts here -->
+    <div class="content" align="center">
+      <h1>Comparing global temperature change and Carbon Dioxide emissions</h1>
+      <div class="Explanation">
+        <!-- Explanation starts here -->
+        <p>
+          Upon comparing global surface temperature deviations from the
+          1951-1980 baseline with carbon dioxide emission levels, it becomes
+          evident that a positive correlation exists. As carbon dioxide
+          emissions increase, there is a concomitant rise in baseline
+          temperatures, underscoring the interplay between these two factors.
+        </p>
+        <!-- Wrap your svg inside a div -->
+
+        <svg id="chart1" width="1045" height="404"></svg>
+
+        <p>
+          So now that we know that carbon dioxide emissions are linked with human activities resulting in 
+          increasing global temperatures what should we do?
+        </p>
+        <div class="pagination">
+          <a href="third.html"> &laquo; Back</a>
+          <a href="third.html">Remove Temperature Graph</a>
+          <a href="fifth.html">Next &raquo;</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add the footer -->
+    <div class="footer">
+      <p>CS416 - Data Visualization</p>
+    </div>
+
+    <!-- Active Link code -->
+    <script>
+      window.onload = () => {
+        // Get all the topnav children a tags
+        const navLinks = document.querySelectorAll(".topnav a");
+    
+        // Get the current URL
+        const url = window.location.href;
+    
+        navLinks.forEach((link, index) => {
+          // If the current page is fourth.html and link is the 3rd one, make it active
+          if (url.includes("fourth.html") && index === 2) {
+            link.className += " active";
+          }
+        });
+      };
+    </script>
+
+    <!-- Javascript -->
+    <script>
+      var xScale;
+      var yScale1;
+      var yScale2;
+
+      async function drawLines() {
+        // Define margin
+        const margin = { top: 20, right: 50, bottom: 30, left: 50 };
+
+        // Load the CSV data
+        const data1 = await d3.csv("Global_CO2_Emissions.csv", d3.autoType);
+        const rawData2 = await d3.csv(
+          "Annual_Surface_Temperature_Change_Global.csv",
+          d3.autoType
+        );
+
+        const data2 = [];
+        for (let year = 1961; year <= 2022; year++) {
+          data2.push({
+            year: year,
+            change: +rawData2[0][`F${year}`],
+          });
+        }
+
+        const width = 1000 - margin.left - margin.right;
+        const height = 500 - margin.top - margin.bottom;
+
+        const svg = d3
+          .select("#chart1")
+          .attr("width", width + margin.left + margin.right)
+          .attr("height", height + margin.top + margin.bottom)
+          .append("g")
+          .attr(
+            "transform",
+            "translate(" + margin.left + "," + margin.top + ")"
+          );
+
+        xScale = d3.scaleTime().range([0, width]);
+        yScale1 = d3.scaleLinear().range([height, 0]);
+        yScale2 = d3.scaleLinear().domain([-0.5, 2]).range([height, 0]);
+
+        // Parse the date / time
+        var parseTime = d3.timeParse("%Y");
+
+        data1.forEach(function (d) {
+          d.Year = parseTime(d.Year);
+          d["Annual CO₂ emissions"] = +d["Annual CO₂ emissions"];
+        });
+
+        // Scale the range of the data
+        xScale.domain(
+          d3.extent(data1, function (d) {
+            return d.Year;
+          })
+        );
+        yScale1.domain([
+          0,
+          d3.max(data1, function (d) {
+            return d["Annual CO₂ emissions"];
+          }),
+        ]);
+
+        // Define the line for emissions
+        var valueline1 = d3
+          .line()
+          .x(function (d) {
+            return xScale(d.Year);
+          })
+          .y(function (d) {
+            return yScale1(d["Annual CO₂ emissions"]);
+          });
+
+        // Define the line for temperature change
+        var valueline2 = d3
+          .line()
+          .x(function (d) {
+            return xScale(parseTime(d.year.toString()));
+          }) // use toString() method
+          .y(function (d) {
+            return yScale2(d.change);
+          });
+
+        // Add the path for emissions data
+        svg
+          .append("path")
+          .datum(data1) // use datum() instead of data()
+          .attr("class", "line")
+          .attr("fill", "none")
+          .attr("stroke", "steelblue")
+          .attr("d", valueline1);
+
+        // Add the path for temperature change data
+        var path2 = svg
+          .append("path")
+          .datum(data2) // use datum() instead of data()
+          .attr("class", "line")
+          .attr("fill", "none")
+          .attr("stroke", "maroon")
+          .attr("d", valueline2);
+
+        // Create a variable to hold the total length of the path2
+        var totalLength = path2.node().getTotalLength();
+
+        // Set properties to animate the drawing of the line
+        path2
+          .attr("stroke-dasharray", totalLength + " " + totalLength)
+          .attr("stroke-dashoffset", totalLength)
+          .transition() // Call a transition
+          .duration(1500) // set duration
+          .ease(d3.easeLinear) // Use a linear easing function
+          .attr("stroke-dashoffset", 0); // Transition the stroke-dashoffset to 0
+
+        // Create a legend group
+        var legend = svg
+          .append("g")
+          .attr("font-family", "sans-serif")
+          .attr("font-size", 10)
+          .attr("text-anchor", "end")
+          .selectAll("g")
+          .data(["Annual CO₂ emissions", "Change °C From 1951-1980 baseline"])
+          .enter()
+          .append("g")
+          .attr("transform", function (d, i) {
+            return "translate(0," + i * 20 + ")";
+          });
+
+        // Add a colored rectangle for each legend element
+        legend
+          .append("rect")
+          .attr("x", 185)
+          .attr("width", 18)
+          .attr("height", 18)
+          .attr("fill", function (d, i) {
+            return i === 0 ? "steelblue" : "maroon";
+          });
+
+        // Add text for each legend element
+        legend
+          .append("text")
+          .attr("x", 180)
+          .attr("y", 9)
+          .attr("dy", "0.35em")
+          .text(function (d) {
+            return d;
+          });
+
+        // Add the X Axis
+        svg
+          .append("g")
+          .attr("transform", "translate(0," + height + ")")
+          .call(d3.axisBottom(xScale));
+
+        // Add the Y1 Axis (left)
+        svg
+          .append("g")
+          .call(d3.axisLeft(yScale1).tickFormat((d) => `${d / 1e9}B`));
+
+        // Add the Y2 Axis (right)
+        svg
+          .append("g")
+          .attr("transform", "translate(" + width + ",0)")
+          .call(
+            d3
+              .axisRight(yScale2)
+              .ticks(6)
+              .tickFormat((d) => `${d}°C`)
+          );
+        var annotations = [
+          {
+            note: {
+              label: "CO₂ emissions start to rise",
+              title: "End of Industrial Revolution",
+              wrap: 190,
+            },
+            x: xScale(new Date(1850, 0, 1)),
+            y: yScale1(0),
+            dy: -100,
+            dx: 0,
+            type: d3.annotationLabel,
+          },
+          {
+            note: {
+              label: "Financial crisis",
+              title: "2008",
+              wrap: 200,
+            },
+            x: xScale(new Date(2008, 0, 1)),
+            y: yScale1(2008),
+            dy: -400,
+            dx: 0,
+            type: d3.annotationLabel,
+          },
+          {
+            note: {
+              label: "Human agctivities seem to directly affect CO2 Emissions",
+              title: "",
+              wrap: 0,
+            },
+            x: xScale(new Date(1780, 0, 1)),
+            y: yScale1(0),
+            dy: -200,
+            dx: 0,
+            type: d3.annotationLabel,
+          },
+        ];
+
+        // Add annotation to the chart
+        var makeAnnotations = d3.annotation().annotations(annotations);
+
+        svg.append("g").attr("class", "annotation-group").call(makeAnnotations);
+
+        // Change font size of third annotation
+        d3.select(".annotation-group")
+          .selectAll(".annotation-note-label")
+          .filter((d, i) => i === 2)
+          .style("font-size", "12px");
+
+        // Remove connector from third annotation and change subject line to invisible
+        d3.select(".annotation-group")
+          .selectAll(".annotation")
+          .filter((d, i) => i === 2)
+          .selectAll(".connector, .connector-end")
+          .remove();
+
+        d3.select(".annotation-group")
+          .selectAll(".annotation")
+          .filter((d, i) => i === 2)
+          .selectAll(".subject *")
+          .remove();
+
+        // Create the y-axis label for emissions
+        svg
+          .append("text")
+          .attr("class", "y-axis-label")
+          .attr("transform", "rotate(-90)")
+          .attr("x", -height / 2)
+          .attr("y", -margin.left)
+          .attr("dy", "1em")
+          .style("text-anchor", "middle")
+          .text("CO₂ emissions (Billion Tonnes)");
+
+        // Create the y-axis label for temperature change
+        svg
+          .append("text")
+          .attr("class", "y-axis-label")
+          .attr("transform", "rotate(-90)")
+          .attr("x", -height / 2)
+          .attr("y", width + margin.right)
+          .attr("dy", "1em")
+          .style("text-anchor", "middle")
+          .text("Change °C From 1951-1980 baseline");
+
+        // Create a div for the tooltip
+        var tooltip = d3
+          .select("body")
+          .append("div")
+          .attr("class", "tooltip")
+          .style("position", "absolute")
+          .style("z-index", "10")
+          .style("visibility", "hidden")
+          .text("a simple tooltip");
+
+        // Create a bisector for each data set
+        var bisectYear = d3.bisector(function (d) {
+          return d.Year;
+        }).left;
+        var bisectTemperature = d3.bisector(function (d) {
+          return parseTime(d.year.toString());
+        }).left;
+
+        // Create a focus group for each data set
+        var focusGroup1 = svg.append("g").style("opacity", 0);
+        var focusGroup2 = svg.append("g").style("opacity", 0);
+
+        // Add a circle to each focus group
+        focusGroup1
+          .append("circle")
+          .style("fill", "none")
+          .attr("stroke", "black")
+          .attr("r", 8.5);
+
+        focusGroup1
+          .append("line")
+          .style("stroke", "black")
+          .style("stroke-dasharray", "3, 3")
+          .attr("id", "focusLine1")
+          .attr("x1", 0)
+          .attr("y1", height)
+          .attr("x2", 0)
+          .attr("y2", 0);
+
+        focusGroup2
+          .append("circle")
+          .style("fill", "none")
+          .attr("stroke", "maroon")
+          .attr("r", 8.5);
+
+        focusGroup2
+          .append("line")
+          .style("stroke", "maroon")
+          .style("stroke-dasharray", "3, 3")
+          .attr("id", "focusLine2")
+          .attr("x1", 0)
+          .attr("y1", height)
+          .attr("x2", 0)
+          .attr("y2", 0);
+
+        svg
+          .append("rect")
+          .style("fill", "none")
+          .style("pointer-events", "all")
+          .attr("width", width)
+          .attr("height", height)
+          .on("mouseover", mouseover)
+          .on("mousemove", mousemove)
+          .on("mouseout", mouseout);
+
+        function mouseover() {
+          tooltip.style("visibility", "visible");
+          focusGroup1.style("opacity", 1);
+          focusGroup2.style("opacity", 1);
+        }
+
+        function mouseout() {
+          tooltip.style("visibility", "hidden");
+          focusGroup1.style("opacity", 0);
+          focusGroup2.style("opacity", 0);
+        }
+
+        function mousemove(event) {
+          console.log("Mouse coordinates:", d3.pointer(event));
+
+          var x0 = xScale.invert(d3.pointer(event)[0]);
+          console.log("Selected year:", x0.getFullYear());
+
+          var i1 = bisectYear(data1, x0, 1);
+          var selectedData1 = data1[i1];
+          console.log("Selected data 1:", selectedData1);
+
+          var emissionValue = selectedData1["Annual CO₂ emissions"];
+          var formattedEmissionValue = "";
+          if (emissionValue < 1e9) {
+            formattedEmissionValue =
+              (emissionValue / 1e6).toFixed(2) + " million tonnes";
+          } else {
+            formattedEmissionValue =
+              (emissionValue / 1e9).toFixed(2) + " billion tonnes";
+          }
+
+          focusGroup1.attr(
+            "transform",
+            "translate(" +
+              xScale(selectedData1.Year) +
+              "," +
+              yScale1(selectedData1["Annual CO₂ emissions"]) +
+              ")"
+          );
+
+          console.log(
+            "Focus group 1 position:",
+            xScale(selectedData1.Year),
+            yScale1(selectedData1["Annual CO₂ emissions"])
+          );
+
+          var temperatureChange = "N/A";
+
+          if (x0.getFullYear() >= 1961 && x0.getFullYear() <= 2022) {
+            var i2 = bisectTemperature(data2, x0, 1);
+            var selectedData2 = data2[i2];
+
+            // Check if there's temperature data for this year
+            if (selectedData2 && selectedData2.change) {
+              temperatureChange = selectedData2.change;
+            }
+
+            tooltip
+              .html(
+                "Year: " +
+                  selectedData1.Year.getFullYear() +
+                  "<br>" +
+                  "CO₂ Emissions: " +
+                  formattedEmissionValue +
+                  "<br> Temperature Change: " +
+                  temperatureChange
+              )
+              .style("left", d3.pointer(event)[0] + 600 + "px")
+              .style("top", d3.pointer(event)[1] + 10 + "px");
+
+            focusGroup2
+              .attr(
+                "transform",
+                "translate(" +
+                  xScale(parseTime(selectedData2.year.toString())) +
+                  "," +
+                  yScale2(selectedData2.change) +
+                  ")"
+              )
+              .style("opacity", 1);
+
+            console.log(
+              "Focus group 2 position:",
+              xScale(parseTime(selectedData2.year.toString())),
+              yScale2(selectedData2.change)
+            );
+          } else {
+            tooltip
+              .html(
+                "Year: " +
+                  selectedData1.Year.getFullYear() +
+                  "<br>" +
+                  "CO₂ Emissions: " +
+                  formattedEmissionValue +
+                  "<br> Temperature Change: " +
+                  temperatureChange
+              )
+              .style("left", d3.pointer(event)[0] + 600 + "px")
+              .style("top", d3.pointer(event)[1] + 100 + "px");
+
+            focusGroup2.style("opacity", 0);
+          }
+        }
+      }
+
+      drawLines();
+    </script>
+  </body>
+</html>

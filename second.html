@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+  <link href="styles.css" rel="stylesheet">
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    /* Styles for the visualization and tooltip */
+    /* ... All the CSS stays the same... */
+    .img-container {
+      position: relative;
+      display: inline-block;
+    }
+
+    .figure-article-caption-owner {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      background-color: rgba(0, 0, 0, 0.5);  /* You can adjust this for readability */
+      color: #fff;
+      padding: 2px 5px;
+      font-size: 10px;
+    }
+  </style>
+</head>
+
+<body>
+<!-- Top Navigation Bar -->
+<div class="topnav">
+  <a href="index.html">1</a>
+  <a href="second.html">2</a>
+  <a href="third.html">3</a>
+  <a href="fifth.html">4</a>
+  <a href="final.html">Resources</a>
+</div>
+
+<!-- Content starts here -->
+<div class="content" align="center">
+    <h1>Industrialization was one of the driving forces behind rising temperatures</h1>
+    <div class="Explanation"> 
+      <!-- Explanation starts here -->
+      <p> The Industrial Revolution, which began in the late 18th century in Britain before spreading to other parts of the world, led to a significant shift in global economic and social structures. This era was characterized by a shift from manual labor and agrarian societies to machine-based manufacturing and industry.</p>
+      <!-- Wrap your image and the caption inside a div -->
+      <div class="img-container">
+        <img src="industrialrevolution.jpg" alt="Industrial_Revolution" width="500" height="333">
+        <div class="figure-article-caption-owner">Danita Delimont / Getty Images</div>
+      </div>
+      <p>One of the most significant transformations during the Industrial Revolution was the increased use of fossil fuels. Prior to this period, most energy was sourced from wind, water, and wood. However, with the invention and adoption of steam engines, coal became a key energy source, with petroleum and natural gas following in later years.</p>
+      <div class="pagination">
+        <a href="index.html"> &laquo; Back</a>
+        <a href="third.html">Next &raquo;</a>
+    </div>
+  </div>
+</div>
+
+<!-- Add the footer -->
+<div class="footer">
+  <p>CS416 - Data Visualization</p>
+</div>
+
+<!-- Active Link code -->
+<script>
+  window.onload = () => {
+    // Get all the topnav children a tags
+    const navLinks = document.querySelectorAll(".topnav a");
+  
+    // Get the current URL
+    const url = window.location.href;
+  
+    navLinks.forEach((link) => {
+      // If the link URL matches the current URL, make it active
+      if (url === link.href) {
+        link.className += " active";
+      }
+    });
+  };
+</script>
+
+<!-- JavaScript code for the visualization -->
+<script>
+  // Code for visualization
+</script>
+
+</body>
+</html>
