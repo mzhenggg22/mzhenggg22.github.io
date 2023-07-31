@@ -6,263 +6,65 @@
   <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
   <link href="styles.css" rel="stylesheet">
   <script src="https://d3js.org/d3.v7.min.js"></script>
-  
-  <style>
-    /* Styles for the visualization and tooltip */
-    .bar {
-      fill: steelblue;
-      background-color: #ddd;
-    }
-    .highlight {
-      fill: lightblue;
-    }
-    .axis path,
-    .axis line {
-      fill: none;
-      stroke: black;
-      shape-rendering: crispEdges;
-    }
-    .axis text {
-      font-family: "Lato", sans-serif;
-      font-size: 10px;
-    }
-    #tooltip {
-      position: absolute;
-      width: auto;
-      height: auto;
-      padding: 10px;
-      background-color: azure;
-      -webkit-border-radius: 10px;
-      -moz-border-radius: 10px;
-      border-radius: 10px;
-      -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
-      -moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
-      box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
-    }
-    #tooltip.hidden {
-      display: none;
-    }
-    #tooltip p {
-      margin: 0;
-      font-family: "Lato", sans-serif;
-      font-size: 13px;
-      line-height: 20px;
-    }
-
-  </style>
 </head>
-<body onload="main()">
-
-<!-- Top Navigation Bar -->
-<div class="topnav">
-  <a href="index.html">1</a>
-  <a href="second.html">2</a>
-  <a href="third.html">3</a>
-  <a href="fifth.html">4</a>
-  <a href="final.html">Resources</a>
-</div>
-
-<!-- Active Link code -->
-<script>
-  window.onload = () => {
-    // Get all the topnav children a tags
-    const navLinks = document.querySelectorAll(".topnav a");
-  
-    // Get the current URL
-    const url = window.location.href;
-  
-    navLinks.forEach((link) => {
-      // If the link URL matches the current URL, make it active
-      if (url === link.href) {
-        link.className += " active";
-      }
-    });
-  };
-</script>
-
-
-<!-- Tooltip div -->
-<div id="tooltip" class="hidden">
-  <p><span id="value">Arbitrary Value</span></p>
-</div>
-
-<!-- Content starts here -->
-<div class="content" align="center">
-    <h1>How has the average global temperature has changed over the years?</h1>
-    <h2>Mean Temperature Change of Meteorological year</h2>
-    <svg id="bar" width="1600" height="500"></svg>
+<body>
+  <!-- Add the top navigation bar -->
+  <div class="topnav">
+    <a href="index.html">Scene1</a>
+    <a href="second.html">Scene2</a>
+    <a href="third.html">Scene3</a>
   </div>
-</div>
 
-<!-- Explanation starts here -->
-<div class="Explanation" align="center"> 
-    <p>This chart shows how the world's surface temperature has changed each year. We compare it to an average temperature found between 1951 and 1980. It clearly demonstrates an <u>increasing average temperature</u> year over year, but why?</p>
-    <br>
-    <p>Click next to find out!</p>
+  <!-- Tooltip div -->
+  <div id="tooltip" class="hidden">
+    <p><strong>Bar Value</strong></p>
+    <p><span id="value">Arbitrary Value</span></p>
+  </div>
 
-    <div class="pagination">
-      <a href="second.html">Next &raquo;</a>
+  <style>
+    /* Your style here */
+  </style>
+
+  <!-- Content starts here -->
+  <div class="content">
+    <div align="center">
+      <h1>How the average global temperature has changed over the years</h1>
+      <svg width="1600" height="500"></svg>
     </div>
-
-
   </div>
-</div>
 
+  <!-- Explanation starts here -->
+  <div class="Explanation">
+    <div align="center">
+      <p>Explanation of what the data is...</p>
+    </div>
+  </div>
 
+  <!-- Add the footer -->
+  <div class="footer">
+    <p>CS416 - Data Visualization</p>
+  </div>
 
-
-<!-- Add the footer -->
-<div class="footer">
-  <p>CS416 - Data Visualization</p>
-</div>
-
-
-<!-- JavaScript code for the visualization -->
-<script>
-  async function drawBar() {
-    // Define margin
-    const margin = { top: 20, right: 20, bottom: 30, left: 50 };
-
-    // Load the CSV data
-    const rawData = await d3.csv("Annual_Surface_Temperature_Change_Global.csv");
-
-    // Extract only the data from 1961 to 2022 and convert them into a more usable format
-    const data = [];
-    for (let year = 1961; year <= 2022; year++) {
-      data.push({
-        year: year, // Keep year as an integer
-        change: +rawData[0][`F${year}`], // Convert change in temperature to a number
+  <!-- Active Link code -->
+  <script>
+    window.onload = () => {
+      const navLinks = document.querySelectorAll(".topnav a");
+      const url = window.location.href;
+    
+      navLinks.forEach((link) => {
+        if (url === link.href) {
+          link.className += " active";
+        }
       });
+    };
+  </script>
+
+  <!-- JavaScript code -->
+  <script>
+      async function drawChart1() {
+      /* Your D3.js code here */
     }
-    
-    console.log(data);
-    // Define SVG dimensions
-    const svgWidth = 1700;
-    const svgHeight = 350;
-
-    // Define width and height of chart area
-    const width = svgWidth - margin.left - margin.right;
-    const height = svgHeight - margin.top - margin.bottom;
-
-    // Append a 'g' element which is moved to start at the top left of the chart area
-    const svg = d3.select("svg")
-      .attr("width", svgWidth)
-      .attr("height", svgHeight)
-      .append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-    // Define the x-axis scale
-    const xScale = d3.scaleBand()
-      .domain(data.map((d) => d.year)) // Use the years as the domain
-      .range([0, width])
-      .padding(0.1); // Adjust padding between bars as needed
-
-    // Define the y-axis scale
-    const yScale = d3.scaleLinear()
-      .domain([-0.5, 2])
-      .range([height, 0]);
-
-    // Define bar width
-    const barWidth = xScale.bandwidth(); // Get bandwidth from the xScale
-
-    // Add grid lines for x-axis
-    svg.selectAll(".x-grid")
-      .data(data.filter((d, i) => i % 3 === 0)) // filter the data to every 3rd year
-      .join("line")
-      .attr("class", "x-grid")
-      .attr("x1", (d) => xScale(d.year) + barWidth / 2) // grid line starts at the middle of the bar
-      .attr("y1", 0)
-      .attr("x2", (d) => xScale(d.year) + barWidth / 2) // grid line ends at the middle of the bar
-      .attr("y2", height)
-      .attr("stroke", "lightgray")
-      .attr("stroke-width", 1);
-
-    // Add grid lines for y-axis
-    svg.selectAll(".y-grid")
-      .data(yScale.ticks(6))
-      .join("line")
-      .attr("class", "y-grid")
-      .attr("x1", 0)
-      .attr("y1", (d) => yScale(d))
-      .attr("x2", width)
-      .attr("y2", (d) => yScale(d))
-      .attr("stroke", "lightgray")
-      .attr("stroke-width", 1);
-
-    // onMouseOver event handler
-    function onMouseOver(event, d) {
-      // Get x and y coordinates for tooltip
-      const [mouseX, mouseY] = d3.pointer(event);
-      const xPosition = mouseX + margin.left + 60  ; // Adjust tooltip position
-      const yPosition = mouseY + margin.top + 95; // Adjust tooltip position
-    
-      // Update Tooltip
-      d3.select('#tooltip')
-        .style('left', xPosition + 'px' )
-        .style('top', yPosition + 'px')
-        .classed('hidden', false) // Show the tooltip by removing the 'hidden' class
-        .select('#value')
-        .text("Year: " + d.year + ", Change: " + d.change + "°C") // Display year and change values
-
-      d3.select(this)
-        .attr('class', 'highlight')
-        .transition()
-        .duration(500);
-        
-    }
-
-    // onMouseOut event handler
-    function onMouseOut(d, i) {
-      d3.select(this).attr('class', 'bar');
-      d3.select(this).transition() //add animation
-        .duration(500);
-
-      d3.select('#tooltip').classed('hidden', true); // Hide the tooltip by adding the 'hidden' class
-    }
-
-    // Create bars
-    svg.selectAll(".bar")
-    .data(data)
-    .join("rect")
-    .attr("class", "bar")
-    .on("mouseover", onMouseOver) // Add listener for event
-    .on("mouseout", onMouseOut)
-    .attr("x", (d) => xScale(d.year)) // Use xScale to position bars
-    .attr("y", yScale(0)) // Initially set y to be the origin
-    .attr("width", barWidth)
-    .attr("height", 0) // Initially set height to be 0
-    .transition()
-    .ease(d3.easeLinear)
-    .duration(500)
-    .delay((d, i) => i * 10)
-    .attr("y", (d) => (d.change < 0 ? yScale(0) : yScale(d.change))) // Transition y to actual position
-    .attr("height", (d) => Math.abs(yScale(d.change) - yScale(0))); // Transition height to actual height
-
-    // Add annotation
-    svg.append("text")
-    .attr("x", xScale(1970) + barWidth / 2) // X position 
-    .attr("y", yScale(data.find((d) => d.year === 1966).change) - 175) // Y position
-    .text("We see that as time passes, the average temperature rises... but why?") // Text for the annotation
-    .attr("text-anchor", "middle") // Center the text over the bar
-    .attr("font-size", "14px") // Adjust the size 
-    .attr("fill", "gray"); // Color of the text
-
-    // Create the x-axis
-    const xAxis = d3.axisBottom(xScale)
-      .tickValues(data.filter((d) => (d.year - 1961) % 3 === 0).map((d) => d.year)); // filter for every 3rd year starting from 1961
-    svg.append("g")
-      .attr("class", "axis")
-      .attr("transform", `translate(0,${yScale(-0.5)})`) // Move x-axis to y = -0.5
-      .call(xAxis);
-
-    // Create the y-axis
-    const yAxis = d3.axisLeft(yScale).ticks(6).tickFormat((d) => `${d}°C`);
-    svg.append("g")
-      .attr("class", "axis")
-      .call(yAxis);
-  }
-
-  // Call the draw function
-  drawBar();
-</script>
+    drawChart1();
+  </script>
 </body>
+</html>
